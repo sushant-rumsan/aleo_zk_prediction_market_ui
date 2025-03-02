@@ -8,13 +8,11 @@ import {
   FoxWalletAdapter,
   SoterWalletAdapter,
 } from "aleo-adapters";
-import ConnectWalletButton from "./components/ConnectWallet";
 import Header from "./components/Header";
 import { BarChartIcon as ChartBar, Coins, Wallet } from "lucide-react";
 
 const PROGRAM_ID =
   "at1ye5axudqp3jzqmkv55p0vy2sw4jlmtdlsh90v75xcatvyj82k59s4qdfjj";
-const API_ENDPOINT = "https://api.explorer.provable.com/v1";
 
 function App() {
   const wallets = useMemo(
@@ -24,6 +22,7 @@ function App() {
       }),
       new PuzzleWalletAdapter({
         programIdPermissions: {
+          //@ts-ignore
           ["mainnet"]: [
             "dApp_1.aleo",
             "dApp_1_import.aleo",
@@ -49,47 +48,23 @@ function App() {
   );
 
   // State for wallet and prediction market
-  const [wallet, setWallet] = useState(null);
-  const [publicKey, setPublicKey] = useState(null);
+  const [wallet] = useState(null);
+  const [publicKey] = useState(null);
   const [eventId, setEventId] = useState("");
   const [stakeAmount, setStakeAmount] = useState("");
   const [prediction, setPrediction] = useState(true);
   const [claimAmount, setClaimAmount] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Connect wallet manually
-  const connectWallet = async (adapter) => {
-    try {
-      await adapter.connect();
-      setWallet(adapter);
-      const pubKey = await adapter.publicKey();
-      setPublicKey(pubKey);
-      console.log("Connected to:", adapter.name, "Public Key:", pubKey);
-      alert(`Connected to ${adapter.name}!`);
-    } catch (e) {
-      console.error("Connection failed:", e);
-      alert("Failed to connect wallet: " + e.message);
-    }
-  };
-
-  // Disconnect wallet
-  const disconnectWallet = async () => {
-    if (wallet) {
-      await wallet.disconnect();
-      setWallet(null);
-      setPublicKey(null);
-      alert("Wallet disconnected!");
-    }
-  };
-
   // Execute a program transition
-  const executeTransition = async (functionName, inputs) => {
+  const executeTransition = async (functionName: any, inputs: any) => {
     if (!wallet) {
       alert("Please connect a wallet first!");
       return null;
     }
     setLoading(true);
     try {
+      //@ts-ignore
       const txId = await wallet.execute({
         programId: PROGRAM_ID,
         functionName,
@@ -120,7 +95,7 @@ function App() {
       ];
       const txId = await executeTransition("stake_public", inputs);
       if (txId) alert(`Stake placed! Tx ID: ${txId}`);
-    } catch (e) {
+    } catch (e: any) {
       alert("Staking failed: " + e.message);
     }
   };
@@ -135,7 +110,7 @@ function App() {
       const inputs = [`${eventId}field`, `${claimAmount}u64`];
       const txId = await executeTransition("claim_public", inputs);
       if (txId) alert(`Winnings claimed! Tx ID: ${txId}`);
-    } catch (e) {
+    } catch (e: any) {
       alert("Claim failed: " + e.message);
     }
   };
@@ -162,7 +137,16 @@ function App() {
               <div className="flex items-center justify-center mb-8 bg-slate-800/50 py-3 px-6 rounded-full backdrop-blur-sm border border-slate-700">
                 <Wallet className="w-5 h-5 mr-2 text-emerald-400" />
                 <p className="text-emerald-400 font-medium">
-                  Connected: {publicKey.slice(0, 10)}...{publicKey.slice(-6)}
+                  Connected:{" "}
+                  {
+                    //@ts-ignore
+                    publicKey.slice(0, 10)
+                  }
+                  ...
+                  {
+                    //@ts-ignore
+                    publicKey.slice(-6)
+                  }
                 </p>
               </div>
             )}
@@ -204,7 +188,7 @@ function App() {
                       Your Prediction
                     </label>
                     <select
-                      value={prediction}
+                      value={prediction.toString()}
                       onChange={(e) => setPrediction(e.target.value === "true")}
                       className="w-full bg-slate-900/70 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                     >

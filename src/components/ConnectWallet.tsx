@@ -9,7 +9,7 @@ const ConnectWalletButton = () => {
   const { select } = useSelect();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleWalletSelect = (walletId: WalletAdapterId) => {
+  const handleWalletSelect = (walletId: any) => {
     const walletAdapterMap = {
       "leo-wallet": "Leo Wallet",
       "puzzle-wallet": "Puzzle Wallet",
@@ -17,6 +17,7 @@ const ConnectWalletButton = () => {
       "soter-wallet": "Soter Wallet",
     };
 
+    //@ts-ignore
     const adapterId = walletAdapterMap[walletId];
 
     if (!adapterId) {

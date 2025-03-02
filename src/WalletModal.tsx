@@ -1,4 +1,3 @@
-import React from "react";
 import Modal from "./components/modal.component";
 import LeoWallet from "./assets/leo.png";
 import PuzzleWallet from "./assets/puzzle.png";
